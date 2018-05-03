@@ -8,14 +8,23 @@ import { Client } from "../../models/client";
   styleUrls: ['./clients.component.css']
 })
 export class ClientsComponent implements OnInit {
-
   clients: Client[];
-
+  totalOwed: number = 0;
   constructor(private clientService: ClientService) { }
 
   ngOnInit() {
     this.clientService.getClients()
-    .subscribe(clients => this.clients = clients);
+    .subscribe(clients => {
+      this.clients = clients
+      this.totalOwed = this.getTotalOwed();
+    });
+  }
+
+  getTotalOwed(){
+    const total = this.clients.reduce((total, client)=>{   
+      return total + parseFloat(client.balance.toString());
+    }, 0);
+    return total;
   }
 
 }
